@@ -1,0 +1,131 @@
+<div class="row filter-row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10 filter-col">
+      <div class="row sub-filter-row">
+        <div class="col-md-4 date-filter-col">
+
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3 upload-col">
+          <div class="input-group mb-3 uploadGroup">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Bulk Upload</span>
+              </div>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="inputGroupFile01" (change)="fileUpload($event.target.files)">
+                <label class="custom-file-label" for="inputGroupFile01"></label>
+              </div>
+          </div>  
+        </div>
+        <div class="col-md-3 btn-col">
+            <button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#exampleModal">Add Expense</button>
+        </div>
+      </div>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+<div class="row table-row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10 table-responsive table-col">
+      <table class="table text-center">
+          <thead>
+            <tr class="table-active">
+              <th scope="col" style="width:8em;">Date</th>
+              <th scope="col">Category</th>
+              <th scope="col">Description</th>
+              <th scope="col">Users</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Status</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of expenseList">
+              <td>{{e.date}}</td>
+              <td>{{e.category}}</td>
+              <td>{{e.description}}</td>
+              <td>{{e.users}}</td>
+              <td>INR {{e.amount}}</td>
+
+              <td>
+                <button *ngIf="e.status==1" disabled class="btn btn-outline-danger btn-sm">Overdue</button>
+                <button *ngIf="e.status==2" disabled class="btn btn-outline-success btn-sm">Paid</button>
+                <button *ngIf="e.status==3" disabled class="btn btn-outline-success btn-sm">Approved</button>
+                <button *ngIf="e.status==4" disabled class="btn btn-outline-danger btn-sm">Rejected</button>
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+  
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new Expense</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="expenseForm">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="inputSelect">Type of Expense</label>
+                  <select class="form-control" id="inputSelect" (change)="changeType($event)" formControlName="type">
+                      <option value="" disabled>Choose a Type</option>
+                      <option *ngFor="let t of expenseType" [ngValue]="t.name">{{t.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="inputDate">Date of Expense</label>
+                  <input type="date" class="form-control" id="inputDate" placeholder="date" formControlName="date">
+                </div>
+              </div>
+              <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Description</label>
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" formControlName="description"></textarea>
+              </div>
+              <div formArrayName="users"
+                    *ngFor="let user of expenseForm.get('users').controls; let i = index;">
+
+                <div class="form-row" [formGroupName]="i">
+                  <div class="form-group col-md-5">
+                    <label for="inputName">Name {{expenseForm.get('users').length}} {{i}}</label>
+                    <input type="text" class="form-control" id="inputName" formControlName="name" placeholder="User name">
+                  </div>
+                  <div class="form-group col-md-5">
+                    <label for="inputEmail">Email Id</label>
+                    <input id="inputEmail" class="form-control" formControlName="email" placeholder="User Email">
+                  </div>
+                  <div class="form-group col-md-2">
+                    <button *ngIf="expenseForm.get('users').length==i+1" class="btn btn-success btn-sm addRemoveBtn" (click)="addUser()">+</button>
+                    <button *ngIf="expenseForm.get('users').length!=i+1" class="btn btn-danger btn-sm addRemoveBtn" (click)="removeUser(i)">-</button>
+                  </div>
+                  <!-- <div class="form-group col-md-4">
+                    <label for="inputShare">Share Percentage</label>
+                    <input type="text" class="form-control" id="inputShare" formControlName="sharePercentage" placeholder="Share in %">
+                  </div> -->
+                </div>
+              </div>
+              <div class="form-group">
+                  <label for="exampleInputAmount">Total Amount</label>
+                  <input type="text" class="form-control" id="exampleInputAmount" placeholder="0.0" formControlName="amount">
+                </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+                  <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
+              </div>
+          </form>  
+
+      </div>
+
+      </div>
+    </div>
+</div>
