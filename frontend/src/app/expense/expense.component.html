@@ -49,7 +49,7 @@
               <td>INR {{e.amount}}</td>
 
               <td>
-                <button *ngIf="e.status==1" disabled class="btn btn-outline-danger btn-sm">Overdue</button>
+                <button *ngIf="e.status==1" disabled class="btn btn-outline-danger btn-sm">Due</button>
                 <button *ngIf="e.status==2" disabled class="btn btn-outline-success btn-sm">Paid</button>
                 <button *ngIf="e.status==3" disabled class="btn btn-outline-success btn-sm">Approved</button>
                 <button *ngIf="e.status==4" disabled class="btn btn-outline-danger btn-sm">Rejected</button>
@@ -96,11 +96,7 @@
                     *ngFor="let user of expenseForm.get('users').controls; let i = index;">
 
                 <div class="form-row" [formGroupName]="i">
-                  <div class="form-group col-md-5">
-                    <label for="inputName">Name {{expenseForm.get('users').length}} {{i}}</label>
-                    <input type="text" class="form-control" id="inputName" formControlName="name" placeholder="User name">
-                  </div>
-                  <div class="form-group col-md-5">
+                  <div class="form-group col">
                     <label for="inputEmail">Email Id</label>
                     <input id="inputEmail" class="form-control" formControlName="email" placeholder="User Email">
                   </div>
@@ -128,4 +124,44 @@
 
       </div>
     </div>
+</div>
+
+<div #bulkUploadModal class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog-scrollable bulkModal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table text-center">
+          <thead>
+            <tr class="table-active">
+              <th scope="col" style="width:8em;">Date</th>
+              <th scope="col">Category</th>
+              <th scope="col">Description</th>
+              <th scope="col">Users</th>
+              <th scope="col">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of bulkUploadData.rows">
+              <td>{{r[0]}}</td>
+              <td>{{r[1]}}</td>
+              <td>{{r[2]}}</td>
+              <td>{{r[3].toString()}}</td>
+              <td>INR {{r[4]}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="bulkSubmit()">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

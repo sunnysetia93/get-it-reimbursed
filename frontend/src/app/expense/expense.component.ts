@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl,FormArray,FormBuilder } from '@angular/forms';
 import { ApiService } from '../api.service';
+
+declare var $:any;
 
 
 @Component({
@@ -14,6 +16,11 @@ export class ExpenseComponent implements OnInit {
   expenseForm:FormGroup;
   users:FormArray;
   expenseList:any=[];
+  @ViewChild('bulkUploadModal') bulkUploadModal : any; 
+  bulkUploadData={
+    header:[],
+    rows:[]
+  }
 
   constructor(private formBuilder:FormBuilder,private api:ApiService) { }
 
@@ -61,7 +68,6 @@ export class ExpenseComponent implements OnInit {
 
       value.users.forEach(element => {
           body.users.push({
-            name:element.name,
             email:element.email
           })
       });
@@ -79,7 +85,6 @@ export class ExpenseComponent implements OnInit {
 
   createUser(): FormGroup {
     return this.formBuilder.group({
-      name: '',
       email: ''
       // sharePercentage: ''
     });
@@ -94,8 +99,12 @@ export class ExpenseComponent implements OnInit {
     this.users = this.expenseForm.get('users') as FormArray;
     this.users.removeAt(i);
   }
+
   fileUpload(files){
     console.log(files);
+    let csvRows=[];
+    let headers=[];
+    let rows=[];
     if(files && files.length > 0) {
       let file : File = files.item(0); 
         console.log(file.name);
@@ -107,13 +116,59 @@ export class ExpenseComponent implements OnInit {
           reader.readAsText(file);
           reader.onload = (e) => {
              let csv: string = reader.result as string;
-             console.log(csv.split(','));
+             csvRows = csv.split('\n');
+             console.log(csvRows)
+             for (let i = 0; i < csvRows.length; i++) {
+               const element = csvRows[i];
+               if(i==0){
+                 headers = element.split(',');
+               }
+               else{
+                 let row = element.split(',');
+                 row[3] = row[3].split('|');
+                 rows.push(row);
+               }
+             }
+             this.bulkUploadData.header=headers;
+             this.bulkUploadData.rows=rows;
+             $(this.bulkUploadModal.nativeElement).modal('show');
+             console.log(rows);
           }
+
         }
         else{
             console.log("file type error!")
         }
+
       }
+  }
+
+  async bulkSubmit() {
+    
+    console.log('Saving bulk data !');
+    this.bulkUploadData.rows.forEach(async (row)=>{
+      let body = {
+          type:row[1],
+          date:row[0],
+          description:row[2],
+          users:[
+            ],
+          amount:row[4]
+      }
+      row[3].forEach(element => {
+          body.users.push({
+            email:element
+          })
+      });
+
+      console.log(body)
+
+      await this.api.postData(body).subscribe(data=>{
+        console.log(data);
+      })
+      
+    })
+
   }
 
 }
