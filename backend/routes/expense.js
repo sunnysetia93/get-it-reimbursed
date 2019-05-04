@@ -25,7 +25,11 @@ router.get('/all',(req,res)=>{
         ]
     })
     .then(result=>{
-        res.status(200).send(result);
+        res.status(200).json({
+            success:true,
+            message:"Successful",
+            body:result
+        });
     })
 })
 
@@ -42,7 +46,10 @@ router.post('/',async (req,res)=>{
         })
 
         if(expenseType.dataValues==null){
-            return res.status(400).send("Error in expense Type")
+            return res.status(400).json({
+                success:false,
+                message:"no expense type found"
+            })
         }
         let created = await Expense.create({
             date:req.body.date,

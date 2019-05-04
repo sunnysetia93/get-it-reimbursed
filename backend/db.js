@@ -23,6 +23,19 @@ const User = db.define('Users',{
     password:Sequelize.STRING
 })
 
+const AuthToken = db.define('Token',{
+    id:{
+        type:Sequelize.INTEGER,
+        autoIncrement:true,
+        primaryKey:true
+    },
+    token: {
+        type: Sequelize.STRING,
+        unique: true,
+        index: true
+    }
+})
+
 const ExpenseType = db.define('ExpenseType',{
     id:{
         type:Sequelize.INTEGER,
@@ -68,6 +81,9 @@ Expense.belongsToMany(User, {
 User.belongsToMany(Expense, {
     through: UserExpense
 });
+
+AuthToken.belongsTo(User);
+User.hasMany(AuthToken);
 
 function seed(){
     User.findOrCreate({
@@ -163,5 +179,5 @@ async function dbRefresh(){
 dbRefresh()
 
 module.exports = {
-    User,Expense,ExpenseType,ReimbursementStatus,UserExpense
+    User,Expense,ExpenseType,ReimbursementStatus,UserExpense,AuthToken
 }

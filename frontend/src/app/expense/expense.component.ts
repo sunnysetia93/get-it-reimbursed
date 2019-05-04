@@ -38,7 +38,7 @@ export class ExpenseComponent implements OnInit {
     });
 
     this.api.getAllExpense().subscribe((data:any)=>{
-        data.forEach(expense => {
+        data.body.forEach(expense => {
               let users = "| "
               expense.Users.forEach(u => {
                 users+=u.name + " | "

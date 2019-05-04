@@ -26,4 +26,9 @@ export class ApiService {
 
     return this.http.post(this.BaseURL+"expense",body,httpOptions)
   }
+  login(body){
+
+    return this.http.post(this.BaseURL+"login",JSON.stringify(body),httpOptions)
+    
+  }
 }
