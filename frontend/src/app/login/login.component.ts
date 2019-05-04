@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, Route } from '@angular/router';
 import { FormBuilder,Validators } from '@angular/forms';
 import { ApiService } from '../api.service';
 
@@ -17,21 +18,24 @@ export class LoginComponent implements OnInit {
     message:""
   }
 
-  constructor(private fb: FormBuilder,private api:ApiService) { }
+  constructor(private fb: FormBuilder,private api:ApiService, private _router: Router) { }
 
   ngOnInit() {
   }
 
   private onSubmit(){
-      console.log(this.loginForm.value);
+    
+    let body = {
+      username:this.loginForm.value.email,
+      password:this.loginForm.value.password
+    }
+    console.log(body);
 
-      let body = {
-        username:this.loginForm.value.email,
-        password:this.loginForm.value.password
-      }
+      this.api.login(body).subscribe((result:any)=>{
+        console.log(result.data);
+        localStorage.setItem('token',result.data.token)
+        this._router.navigate(['/reimburse']);
 
-      this.api.login(body).subscribe(data=>{
-        console.log(data);
       })
       // this.errors.message="Incorrect Username & Password !"
   }

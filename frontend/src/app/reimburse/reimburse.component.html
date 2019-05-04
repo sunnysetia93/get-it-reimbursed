@@ -1,3 +1,41 @@
-<p>
-  reimburse works!
-</p>
+<app-header></app-header>
+<div class="row table-row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10 table-responsive table-col">
+        <table class="table text-center">
+            <thead>
+              <tr class="table-active">
+                <th scope="col" style="width:8em;">Date</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col">Users</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Status Update</th>
+  
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of expenseList">
+                <td>{{e.date}}</td>
+                <td>{{e.category}}</td>
+                <td>{{e.description}}</td>
+                <td>{{e.users}}</td>
+                <td>INR {{e.amount}}</td>
+  
+                <td>
+                    <div class="input-group">
+                        <select class="custom-select" id="inputGroupSelect04" (change)="changeStatusId(e,$event)">
+                          <option *ngFor="let opt of statusTypes"  [value]="opt.id"  [selected]="opt.id==e.status">{{opt.name}}</option>
+                        </select>
+                        <div class="input-group-append">
+                          <button [disabled]="e.selectedNewStatusFlag==false" class="btn btn-success" type="button" (click)="updateStatus(e)">Update</button>
+                        </div>
+                    </div>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+    </div>
+    <div class="col-md-1"></div>
+  </div>

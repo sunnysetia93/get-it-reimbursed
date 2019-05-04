@@ -11,6 +11,7 @@ import { ReimburseComponent } from './reimburse/reimburse.component';
 import { LoginComponent } from './login/login.component';
 import { ApiService } from './api.service';
 import { HeaderComponent } from './header/header.component';
+import { AuthGuard } from './guards/auth-guard.service';
 
 @NgModule({
   declarations: [
