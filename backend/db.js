@@ -1,6 +1,6 @@
 var Sequelize = require('sequelize')
-
-var db = new Sequelize('expense_split','root','setia93',{
+const DB_info = require('./config').DB_info;
+var db = new Sequelize('expense_split',DB_info.username,DB_info.password,{
 host:'localhost',
 dialect:'mysql',
 pool: {

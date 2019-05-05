@@ -5,6 +5,30 @@ const ReimbursementStatus = require('../db').ReimbursementStatus;
 const UserExpense = require('../db').UserExpense;
 const User = require('../db').User;
 
+
+router.get('/reimburseTypes',(req,res)=>{
+    ReimbursementStatus.findAll()
+        .then((data)=>{
+            if(!data){
+                res.status(404).json({
+                    success:false,
+                    message:"No records Found"
+                })
+            }
+            res.status(200).json({
+                success:true,
+                message:"Successfully retrieved!",
+                data:data
+            })
+        })
+        .catch(err=>{
+            res.status(400).json({
+                success:false,
+                message:"Error Found"
+            })
+        })
+})
+
 router.get('/types',(req,res)=>{
 
     ExpenseType.findAll()

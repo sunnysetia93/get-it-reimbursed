@@ -46,4 +46,39 @@ router.use('/expense',require('./expense.js'))
 router.use(passport.authenticate('bearer'));
 router.use('/reimburse',require('./reimburse'));
 
+router.post('/logout',async(req,res)=>{
+
+    if(req.user && req.headers && req.headers.authorization){
+        let token = req.headers.authorization.split(' ')[1];
+
+        let result = await AuthToken.findOne({
+            where:{
+                token:token
+            }
+        })
+
+        if(!result){
+            return res.status(404).json({
+                success:false,
+                message:"token not found"
+            })
+        }
+
+        AuthToken.destroy({
+            where:{
+                token:token
+            }
+        }).then((deleted)=>{
+
+            req.user=null;
+            req.logout();
+            req.session.destroy()
+            return res.status(200).json({
+                success:true,
+                message:"logged out"
+            })
+        })
+    }
+})
+
 module.exports = router

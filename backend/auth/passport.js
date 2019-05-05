@@ -42,7 +42,8 @@ passport.use(new LocalStrategy(function(email,password,done){
 }));
 
 passport.use(new BearerStrategy(function(token,done)
-{
+{   
+    console.log(token)
     AuthToken.findOne({
         where:{
             token:token
